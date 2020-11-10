@@ -76,7 +76,7 @@ class YouTubeUploader:
         title_field = self.browser.find(By.ID, Constant.TEXTBOX)
         title_field.click()
         time.sleep(Constant.USER_WAITING_TIME)
-        title_field.clear()
+        # title_field.clear()
         time.sleep(Constant.USER_WAITING_TIME)
         title_field.send_keys(Keys.COMMAND + 'a')
         time.sleep(Constant.USER_WAITING_TIME)
