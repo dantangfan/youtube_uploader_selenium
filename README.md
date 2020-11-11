@@ -6,10 +6,15 @@ which is the maximum [[1]](https://github.com/tokland/youtube-upload/issues/268)
 
 ## Features
 -[x] title
+
 -[x] description
+
 -[x] thumbnail
+
 -[x] playlist (partially DONE)
+
 -[x] tags
+
 -[x] kids
 
 
