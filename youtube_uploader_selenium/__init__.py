@@ -24,7 +24,9 @@ class YouTubeUploader:
     """A class for uploading videos on YouTube via Selenium using metadata JSON file
     to extract its title, description etc"""
 
-    def __init__(self, video_path: str, metadata_json_path: Optional[str] = None) -> None:
+    def __init__(
+        self, video_path: str, metadata_json_path: Optional[str] = None
+    ) -> None:
         self.video_path = video_path
         self.metadata_dict = load_metadata(metadata_json_path)
         current_working_dir = str(Path.cwd())
@@ -37,9 +39,13 @@ class YouTubeUploader:
         if not self.metadata_dict[Constant.VIDEO_TITLE]:
             self.logger.warning("The video title was not found in a metadata file")
             self.metadata_dict[Constant.VIDEO_TITLE] = Path(self.video_path).stem
-            self.logger.warning("The video title was set to {}".format(Path(self.video_path).stem))
+            self.logger.warning(
+                "The video title was set to {}".format(Path(self.video_path).stem)
+            )
         if not self.metadata_dict[Constant.VIDEO_DESCRIPTION]:
-            self.logger.warning("The video description was not found in a metadata file")
+            self.logger.warning(
+                "The video description was not found in a metadata file"
+            )
 
     def upload(self):
         try:
@@ -59,61 +65,102 @@ class YouTubeUploader:
             time.sleep(Constant.USER_WAITING_TIME)
             self.browser.refresh()
         else:
-            self.logger.info('Please sign in and then press enter')
+            self.logger.info("Please sign in and then press enter")
             input()
             self.browser.get(Constant.YOUTUBE_URL)
             time.sleep(Constant.USER_WAITING_TIME)
             self.browser.save_cookies()
 
     def __upload(self) -> (bool, Optional[str]):
+        print("$$$$$$$$$$$$$$$$$$$$$")
         self.browser.get(Constant.YOUTUBE_URL)
         time.sleep(Constant.USER_WAITING_TIME)
         self.browser.get(Constant.YOUTUBE_UPLOAD_URL)
         time.sleep(Constant.USER_WAITING_TIME)
         absolute_video_path = str(Path.cwd() / self.video_path)
-        self.browser.find(By.XPATH, Constant.INPUT_FILE_VIDEO).send_keys(absolute_video_path)
-        self.logger.debug('Attached video {}'.format(self.video_path))
+        self.browser.find(By.XPATH, Constant.INPUT_FILE_VIDEO).send_keys(
+            absolute_video_path
+        )
+        self.logger.debug("Attached video {}".format(self.video_path))
         title_field = self.browser.find(By.ID, Constant.TEXTBOX)
         title_field.click()
         time.sleep(Constant.USER_WAITING_TIME)
         # title_field.clear()
         time.sleep(Constant.USER_WAITING_TIME)
-        title_field.send_keys(Keys.COMMAND + 'a')
+        title_field.send_keys(Keys.COMMAND + "a")
         time.sleep(Constant.USER_WAITING_TIME)
         title_field.send_keys(self.metadata_dict[Constant.VIDEO_TITLE])
-        self.logger.debug('The video title was set to \"{}\"'.format(self.metadata_dict[Constant.VIDEO_TITLE]))
+        self.logger.debug(
+            'The video title was set to "{}"'.format(
+                self.metadata_dict[Constant.VIDEO_TITLE]
+            )
+        )
 
         video_description = self.metadata_dict[Constant.VIDEO_DESCRIPTION]
         if video_description:
-            description_container = self.browser.find(By.XPATH,
-                                                      Constant.DESCRIPTION_CONTAINER)
-            description_field = self.browser.find(By.ID, Constant.TEXTBOX, element=description_container)
+            description_container = self.browser.find(
+                By.XPATH, Constant.DESCRIPTION_CONTAINER
+            )
+            description_field = self.browser.find(
+                By.ID, Constant.TEXTBOX, element=description_container
+            )
             description_field.click()
             time.sleep(Constant.USER_WAITING_TIME)
             description_field.clear()
             time.sleep(Constant.USER_WAITING_TIME)
             description_field.send_keys(self.metadata_dict[Constant.VIDEO_DESCRIPTION])
             self.logger.debug(
-                'The video description was set to \"{}\"'.format(self.metadata_dict[Constant.VIDEO_DESCRIPTION]))
+                'The video description was set to "{}"'.format(
+                    self.metadata_dict[Constant.VIDEO_DESCRIPTION]
+                )
+            )
+
+        tags = self.metadata_dict["tags"]
+        thumbnail = self.metadata_dict["thumbnail"]
+        playlist = self.metadata_dict["playlist"]
+        self.logger.debug(tags)
+        self.logger.debug(thumbnail)
+        self.logger.debug(playlist)
+
+        if thumbnail:
+            self.browser.find(By.ID, Constant.THUMBNAIL_ID).send_keys(thumbnail)
+            self.logger.debug('Added thumbnail "{}"'.format(thumbnail))
+            time.sleep(Constant.USER_WAITING_TIME)
+
+        if playlist:
+            self.browser.find(By.XPATH, Constant.PLAYLIST_CONTAINER).click()
+            time.sleep(Constant.USER_WAITING_TIME)
+            self.browser.find(By.XPATH, Constant.PLAYLIST_UZI_CHECKBOX).click()
+            time.sleep(Constant.USER_WAITING_TIME)
+            self.browser.find(By.XPATH, Constant.PLAYLIST_DONE_BUTTON).click()
+            time.sleep(Constant.USER_WAITING_TIME)
+
+        if tags:
+            # more option
+            self.browser.find(By.XPATH, Constant.MORE_OPTIONS_CONTAINER).click()
+            time.sleep(Constant.USER_WAITING_TIME)
+
+            # tags
+            self.browser.find(By.XPATH, Constant.TAGS_TEXT_INPUT).send_keys(tags)
+            time.sleep(Constant.USER_WAITING_TIME)
 
         kids_section = self.browser.find(By.NAME, Constant.NOT_MADE_FOR_KIDS_LABEL)
         self.browser.find(By.ID, Constant.RADIO_LABEL, kids_section).click()
-        self.logger.debug('Selected \"{}\"'.format(Constant.NOT_MADE_FOR_KIDS_LABEL))
+        self.logger.debug('Selected "{}"'.format(Constant.NOT_MADE_FOR_KIDS_LABEL))
 
         self.browser.find(By.ID, Constant.NEXT_BUTTON).click()
-        self.logger.debug('Clicked {}'.format(Constant.NEXT_BUTTON))
+        self.logger.debug("Clicked {}".format(Constant.NEXT_BUTTON))
 
         self.browser.find(By.ID, Constant.NEXT_BUTTON).click()
-        self.logger.debug('Clicked another {}'.format(Constant.NEXT_BUTTON))
+        self.logger.debug("Clicked another {}".format(Constant.NEXT_BUTTON))
 
         public_main_button = self.browser.find(By.NAME, Constant.PUBLIC_BUTTON)
         self.browser.find(By.ID, Constant.RADIO_LABEL, public_main_button).click()
-        self.logger.debug('Made the video {}'.format(Constant.PUBLIC_BUTTON))
+        self.logger.debug("Made the video {}".format(Constant.PUBLIC_BUTTON))
 
         video_id = self.__get_video_id()
 
-        status_container = self.browser.find(By.XPATH,
-                                             Constant.STATUS_CONTAINER)
+        status_container = self.browser.find(By.XPATH, Constant.STATUS_CONTAINER)
         while True:
             in_process = status_container.text.find(Constant.UPLOADED) != -1
             if in_process:
@@ -125,9 +172,8 @@ class YouTubeUploader:
 
         # Catch such error as
         # "File is a duplicate of a video you have already uploaded"
-        if done_button.get_attribute('aria-disabled') == 'true':
-            error_message = self.browser.find(By.XPATH,
-                                              Constant.ERROR_CONTAINER).text
+        if done_button.get_attribute("aria-disabled") == "true":
+            error_message = self.browser.find(By.XPATH, Constant.ERROR_CONTAINER).text
             self.logger.error(error_message)
             return False, None
 
@@ -141,10 +187,13 @@ class YouTubeUploader:
     def __get_video_id(self) -> Optional[str]:
         video_id = None
         try:
-            video_url_container = self.browser.find(By.XPATH, Constant.VIDEO_URL_CONTAINER)
-            video_url_element = self.browser.find(By.XPATH, Constant.VIDEO_URL_ELEMENT,
-                                                  element=video_url_container)
-            video_id = video_url_element.get_attribute(Constant.HREF).split('/')[-1]
+            video_url_container = self.browser.find(
+                By.XPATH, Constant.VIDEO_URL_CONTAINER
+            )
+            video_url_element = self.browser.find(
+                By.XPATH, Constant.VIDEO_URL_ELEMENT, element=video_url_container
+            )
+            video_id = video_url_element.get_attribute(Constant.HREF).split("/")[-1]
         except:
             self.logger.warning(Constant.VIDEO_NOT_FOUND_ERROR)
             pass
