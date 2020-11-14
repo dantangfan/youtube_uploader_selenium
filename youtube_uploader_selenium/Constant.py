@@ -37,7 +37,7 @@ class Constant:
     INPUT_FILE_VIDEO = "//input[@type='file']"
 
     PLAYLIST_CONTAINER = "/html/body/ytcp-uploads-dialog/paper-dialog/div/ytcp-animatable[1]/ytcp-uploads-details/div/ytcp-uploads-basics/ytcp-video-metadata-playlists/ytcp-text-dropdown-trigger"
-    PLAYLIST_UZI_CHECKBOX = '//*[@id="checkbox-0"]'
+    PLAYLIST_CHECKBOX = '//*[@id="checkbox-{}"]'
     PLAYLIST_DONE_BUTTON = (
         "/html/body/ytcp-playlist-dialog/paper-dialog/div[2]/ytcp-button[3]"
     )
@@ -50,3 +50,8 @@ class Constant:
         "/html/body/ytcp-uploads-dialog/paper-dialog/div/ytcp-animatable[1]/"
         "ytcp-uploads-details/div/div/ytcp-button/div"
     )
+
+    PLAYLIST_MAPPING = {
+        "uzi": 0,
+        "vincent": 1
+    }

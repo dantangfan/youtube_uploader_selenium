@@ -72,7 +72,7 @@ class YouTubeUploader:
             self.browser.save_cookies()
 
     def __upload(self) -> (bool, Optional[str]):
-        print("$$$$$$$$$$$$$$$$$$$$$")
+        print("##############!!!!!!####")
         self.browser.get(Constant.YOUTUBE_URL)
         time.sleep(Constant.USER_WAITING_TIME)
         self.browser.get(Constant.YOUTUBE_UPLOAD_URL)
@@ -130,7 +130,9 @@ class YouTubeUploader:
         if playlist:
             self.browser.find(By.XPATH, Constant.PLAYLIST_CONTAINER).click()
             time.sleep(Constant.USER_WAITING_TIME)
-            self.browser.find(By.XPATH, Constant.PLAYLIST_UZI_CHECKBOX).click()
+            self.browser.find(
+                By.XPATH, Constant.PLAYLIST_CHECKBOX.format(Constant.PLAYLIST_MAPPING[playlist])
+            ).click()
             time.sleep(Constant.USER_WAITING_TIME)
             self.browser.find(By.XPATH, Constant.PLAYLIST_DONE_BUTTON).click()
             time.sleep(Constant.USER_WAITING_TIME)
