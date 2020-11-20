@@ -72,7 +72,6 @@ class YouTubeUploader:
             self.browser.save_cookies()
 
     def __upload(self) -> (bool, Optional[str]):
-        print("##############!!!!!!####")
         self.browser.get(Constant.YOUTUBE_URL)
         time.sleep(Constant.USER_WAITING_TIME)
         self.browser.get(Constant.YOUTUBE_UPLOAD_URL)
@@ -117,25 +116,26 @@ class YouTubeUploader:
 
         tags = self.metadata_dict["tags"]
         thumbnail = self.metadata_dict["thumbnail"]
-        playlist = self.metadata_dict["playlist"]
+        playlist_id = self.metadata_dict["playlist_id"]
         self.logger.debug(tags)
         self.logger.debug(thumbnail)
-        self.logger.debug(playlist)
+        self.logger.debug(playlist_id)
 
         if thumbnail:
             self.browser.find(By.ID, Constant.THUMBNAIL_ID).send_keys(thumbnail)
             self.logger.debug('Added thumbnail "{}"'.format(thumbnail))
             time.sleep(Constant.USER_WAITING_TIME)
 
-        if playlist:
+        if playlist_id:
             self.browser.find(By.XPATH, Constant.PLAYLIST_CONTAINER).click()
             time.sleep(Constant.USER_WAITING_TIME)
             self.browser.find(
-                By.XPATH, Constant.PLAYLIST_CHECKBOX.format(Constant.PLAYLIST_MAPPING[playlist])
+                By.XPATH, Constant.PLAYLIST_CHECKBOX.format(playlist_id)
             ).click()
-            time.sleep(Constant.USER_WAITING_TIME)
+            self.logger.debug("Playlist id: ", playlist_id)
+            time.sleep(Constant.USER_WAITING_TIME*3)
             self.browser.find(By.XPATH, Constant.PLAYLIST_DONE_BUTTON).click()
-            time.sleep(Constant.USER_WAITING_TIME)
+            time.sleep(Constant.USER_WAITING_TIME*5)
 
         if tags:
             # more option

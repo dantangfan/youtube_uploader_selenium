@@ -51,7 +51,3 @@ class Constant:
         "ytcp-uploads-details/div/div/ytcp-button/div"
     )
 
-    PLAYLIST_MAPPING = {
-        "uzi": 0,
-        "vincent": 1
-    }
