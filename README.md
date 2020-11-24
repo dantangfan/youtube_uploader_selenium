@@ -11,7 +11,7 @@ which is the maximum [[1]](https://github.com/tokland/youtube-upload/issues/268)
 
 - [x] thumbnail
 
-- [x] playlist (partially DONE)
+- [x] playlist
 
 - [x] tags
 

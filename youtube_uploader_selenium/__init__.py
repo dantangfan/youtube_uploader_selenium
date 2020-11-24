@@ -116,26 +116,33 @@ class YouTubeUploader:
 
         tags = self.metadata_dict["tags"]
         thumbnail = self.metadata_dict["thumbnail"]
-        playlist_id = self.metadata_dict["playlist_id"]
+        playlist = self.metadata_dict["playlist"]
         self.logger.debug(tags)
         self.logger.debug(thumbnail)
-        self.logger.debug(playlist_id)
 
         if thumbnail:
             self.browser.find(By.ID, Constant.THUMBNAIL_ID).send_keys(thumbnail)
             self.logger.debug('Added thumbnail "{}"'.format(thumbnail))
             time.sleep(Constant.USER_WAITING_TIME)
 
-        if playlist_id:
+        if playlist:
             self.browser.find(By.XPATH, Constant.PLAYLIST_CONTAINER).click()
             time.sleep(Constant.USER_WAITING_TIME)
+            self.logger.debug("Playlist: {}\n".format(playlist))
+            # find playlist text
+            text_element = self.browser.find(
+                By.XPATH, "//*[contains(text(), '{}')]".format(playlist)
+            )
+            # 'checkbox-label-0'
+            parent_element = text_element.find_element_by_xpath("..")
+            playlist_id = parent_element.get_attribute("id").split("-")[-1]
+            self.logger.debug("Playlist_id: {}\n".format(playlist_id))
             self.browser.find(
                 By.XPATH, Constant.PLAYLIST_CHECKBOX.format(playlist_id)
             ).click()
-            self.logger.debug("Playlist id: ", playlist_id)
-            time.sleep(Constant.USER_WAITING_TIME*3)
+            time.sleep(Constant.USER_WAITING_TIME * 3)
             self.browser.find(By.XPATH, Constant.PLAYLIST_DONE_BUTTON).click()
-            time.sleep(Constant.USER_WAITING_TIME*5)
+            time.sleep(Constant.USER_WAITING_TIME * 5)
 
         if tags:
             # more option
